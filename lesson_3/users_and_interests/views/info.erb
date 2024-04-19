@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang='en'>
+<body>
+  <h1><%= @name.capitalize %></h1>
+  <h2>Email Address</h2>
+  <ul>
+    <li><%= @email %></li>
+  </ul>
+  <h2>Interest</h2>
+  <ul>
+    <% @interests.each do |activity| %>
+      <li><%= activity %></li>
+    <% end %>
+  </ul>
+  <h3>View other user's info</h2>
+  <ul>
+    <% @others.each do |name| %>
+      <li><a href="/<%= name %>"><%= name.capitalize %></li>
+    <% end %>
+  </ul>
+</body>
+</html>

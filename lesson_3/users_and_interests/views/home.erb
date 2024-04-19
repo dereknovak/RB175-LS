@@ -1,7 +1,11 @@
-<html>
+<!DOCTYPE html>
+<html lang='en'>
 <body>
+  <h1>Users</h1>
   <ul>
     <% @users.each_with_index do |user, index| %>
-      <li><a href=/users<%= user %>
+      <li><a href="/<%= user.to_s %>"><%= user.to_s.capitalize %></a></li>
+    <% end %>
+  </ul>
 </body>
-<html>
+</html>
