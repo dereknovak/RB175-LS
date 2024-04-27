@@ -4,6 +4,7 @@
     <type>
   </head>
   <body>
+    <%= session.delete(:error) if session[:error] %>
     <ul>
       <% @files.each do |file| %>
         <li><a href="/<%= file %>"><%= file %></a></li>

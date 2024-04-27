@@ -17,7 +17,7 @@ class CMSTest < Minitest::Test
 
     assert_equal 200, last_response.status
     assert_equal 'text/html;charset=utf-8', last_response['Content-Type']
-    assert_includes last_response.body, 'about.txt'
+    assert_includes last_response.body, 'about.md'
     assert_includes last_response.body, 'changes.txt'
     assert_includes last_response.body, 'history.txt'
   end
@@ -50,5 +50,24 @@ class CMSTest < Minitest::Test
     assert_equal 200, last_response.status
     assert_equal 'text/plain', last_response['Content-Type']
     assert_equal history_body, last_response.body
+  end
+
+  def test_file_does_not_exist
+    get '/notafile.txt'
+    assert_equal 302, last_response.status
+
+    get last_response['Location']
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, 'notafile.txt does not exist.'
+    
+    get '/'
+    refute_includes last_response.body, 'notafile.txt does not exist.'
+  end
+
+  def test_view_markdown_file
+    get '/about.md'
+    assert_equal 200, last_response.status
+    assert_equal 'text/html', last_response['Content-Type']
+    assert_includes last_response.body, 'Ruby is'
   end
 end
