@@ -36,14 +36,34 @@ get '/' do
   erb :index
 end
 
-get '/:file' do
-  file_path = root + '/data/' + params[:file]
+get '/:filename' do
+  file_path = root + '/data/' + params[:filename]
   file_name = File.basename(file_path)
-
+  
   if File.exist?(file_path)
     load_file_content(file_path)
   else
-    session[:error] = "#{params[:file]} does not exist."
+    session[:error] = "#{params[:filename]} does not exist."
     redirect '/'
   end
+end
+
+post '/:filename' do
+  file_path = root + '/data/' + params[:filename]
+  file_name = File.basename(file_path)
+
+  File.write(file_path, params[:content])
+
+  session[:message] = "#{file_name} has been updated."
+  redirect '/'
+end
+
+get '/:filename/edit' do
+  file_path = root + '/data/' + params[:filename]
+  file_name = File.basename(file_path)
+
+  @filename = params[:filename]
+  @content = File.read(file_path)
+
+  erb :edit
 end
