@@ -2,6 +2,7 @@ ENV['RACK_ENV'] = 'test'
 
 require 'minitest/autorun'
 require 'rack/test'
+require 'fileutils'
 
 require_relative '../cms'
 
@@ -12,44 +13,40 @@ class CMSTest < Minitest::Test
     Sinatra::Application
   end
 
+  def setup
+    FileUtils.mkdir_p(data_path)
+  end
+
+  def teardown
+    FileUtils.rm_rf(data_path)
+  end
+
+  def create_document(name, content = '')
+    File.open(File.join(data_path, name), 'w') do |file|
+      file.write(content)
+    end
+  end
+
   def test_index
+    create_document 'about.md'
+    create_document 'changes.txt'
+
     get '/'
 
     assert_equal 200, last_response.status
     assert_equal 'text/html;charset=utf-8', last_response['Content-Type']
     assert_includes last_response.body, 'about.md'
     assert_includes last_response.body, 'changes.txt'
-    assert_includes last_response.body, 'history.txt'
   end
 
   def test_viewing_text_document
-    get '/history.txt'
+    create_document 'history.txt', 'Testing content'
 
-    history_body = <<~TXT.chomp
-    1993 - Yukihiro Matsumoto dreams up Ruby.
-    1995 - Ruby 0.95 released.
-    1996 - Ruby 1.0 released.
-    1998 - Ruby 1.2 released.
-    1999 - Ruby 1.4 released.
-    2000 - Ruby 1.6 released.
-    2003 - Ruby 1.8 released.
-    2007 - Ruby 1.9 released.
-    2013 - Ruby 2.0 released.
-    2013 - Ruby 2.1 released.
-    2014 - Ruby 2.2 released.
-    2015 - Ruby 2.3 released.
-    2016 - Ruby 2.4 released.
-    2017 - Ruby 2.5 released.
-    2018 - Ruby 2.6 released.
-    2019 - Ruby 2.7 released.
-    2020 - Ruby 3.0 released.
-    2021 - Ruby 3.1 released.
-    2022 - Ruby 3.2 released.
-    TXT
+    get '/history.txt'
 
     assert_equal 200, last_response.status
     assert_equal 'text/plain', last_response['Content-Type']
-    assert_equal history_body, last_response.body
+    assert_includes last_response.body, "Testing content"
   end
 
   def test_file_does_not_exist
@@ -65,9 +62,35 @@ class CMSTest < Minitest::Test
   end
 
   def test_view_markdown_file
+    create_document 'about.md', '# Testing heading'
+
     get '/about.md'
+
     assert_equal 200, last_response.status
-    assert_equal 'text/html', last_response['Content-Type']
-    assert_includes last_response.body, 'Ruby is'
+    assert_equal 'text/html;charset=utf-8', last_response['Content-Type']
+    assert_includes last_response.body, '<h1>Testing heading</h1>'
+  end
+
+  def test_edit_page
+    create_document 'test.txt', 'Testing content'
+
+    get '/test.txt/edit'
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, '<textarea'
+    assert_includes last_response.body, %q(<button type='submit')
+  end
+
+  def test_updating_document
+    create_document 'test.txt', 'Test number 1'
+
+    get '/test.txt'
+    assert_equal 'Test number 1', last_response.body
+    
+    post '/test.txt', content: 'Test number 2'
+    assert_equal 302, last_response.status
+
+    get '/test.txt'
+    assert_equal 200, last_response.status
+    assert_equal 'Test number 2', last_response.body
   end
 end
