@@ -1,9 +1,15 @@
 <!DOCTYPE html>
 <html lang='en-US'>
   <head>
-    <link rel='stylesheet' href='../public/cms.css'>
+    <link rel='stylesheet' href='cms.css'>
   </head>
   
   <body>
+    <main>
+      <% if session[:message] %>
+        <p class='message'><%= session.delete(:message) %></p>
+      <% end %>
+      <%= yield %>
+    </main>
   </body>
 </html>

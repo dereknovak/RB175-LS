@@ -1,0 +1,29 @@
+/* * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+} */
+
+body {
+  padding: 1em;
+  margin: 40px;
+  font-family: sans-serif;
+}
+
+.message {
+  background-color: #FFFF99;
+  padding: 10px;
+}
+
+dd {
+  display: inline-block;
+}
+
+form.inline {
+  display: inline;
+}
+
+dl.inline dt,
+dl.inline dd {
+  display: inline-block;
+}
