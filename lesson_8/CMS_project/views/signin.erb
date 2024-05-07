@@ -1,16 +1,14 @@
-<form action='/users/signin/success' method='post'>
-  <dl class='inline'>
-    <dt><label for='username'>Username:</label>
-    <dd>
-      <input type='text' name='username' id='username'>
-    </dd>
-  </dl>
-  <dl class='inline'>
-    <dt><label for='password'>Password:</label>
-    <dd>
-      <input type='password' name='password' id='password'>
-    </dd>
-  </dl>
+<form action='/users/signin' method='post'>
+  <div>
+    <label for="username"> Username:
+      <input name="username" id="username" value="<%= params[:username] %>">
+    </label>
+  </div>
+  <div>
+    <label for="password"> Password:
+      <input type="password" id="password" name="password">
+    </label>
+  </div>
 
   <button type='submit'>Sign In</button>
 </form>

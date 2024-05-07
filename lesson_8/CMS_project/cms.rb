@@ -41,11 +41,25 @@ get "/" do
 end
 
 get "/users/signin" do
-  erb :signin
+  erb :signin, layout: :layout
 end
 
-post "/users/signin/success" do
+post "/users/signin" do
+  if params[:username] == 'admin' && params[:password] == 'secret'
+    session[:username] = params[:username]    
+    session[:message] = 'Welcome!'
+    redirect '/'
+  else
+    session[:message] = 'Invalid credentials.'
+    status 422
+    erb :signin, layout: :layout
+  end
+end
 
+post "/users/signout" do
+  session.delete(:username)
+  session[:message] = "You have been signed out."
+  redirect '/'
 end
 
 get '/new' do

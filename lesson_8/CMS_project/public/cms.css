@@ -23,7 +23,7 @@ form.inline {
   display: inline;
 }
 
-dl.inline dt,
-dl.inline dd {
-  display: inline-block;
+.user-status {
+  font-style: italic;
+  font-size: 0.9em;
 }
