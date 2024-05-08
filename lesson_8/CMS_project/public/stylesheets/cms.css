@@ -27,3 +27,8 @@ form.inline {
   font-style: italic;
   font-size: 0.9em;
 }
+
+input[name=username],
+input[name=password] {
+  margin: 50px
+}

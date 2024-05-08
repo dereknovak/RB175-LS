@@ -31,6 +31,7 @@ GEM
       tilt (~> 2.0)
     tilt (2.3.0)
     webrick (1.8.1)
+    yaml (0.3.0)
 
 PLATFORMS
   ruby
@@ -44,6 +45,7 @@ DEPENDENCIES
   sinatra
   sinatra-contrib
   webrick
+  yaml
 
 RUBY VERSION
    ruby 3.2.2p53
