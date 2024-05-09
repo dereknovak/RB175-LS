@@ -1,3 +1,3 @@
-admin: secret
-derek: rubyiscool
-kyle: pythoniscool
+admin: $2a$12$LgDjlGersiB7toe6i.HrXuE6.FdmIley3blhhxDlN5bYd.7enb7dy
+derek: $2a$12$vSS6ycmFmoinBBwAIkXFsOxJlyN5xRyz.KrQRa37TYHhRkDKEB.JW
+kyle: pythoniscool$2a$12$hrybkMk2Hw5bQuJtIOSPneVM8jHAK0dnmd61rQpNGKJTXo/K9Kc4i

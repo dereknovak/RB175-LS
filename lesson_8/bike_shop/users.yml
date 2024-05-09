@@ -1,0 +1,12 @@
+Derek Novak:
+    member_number: '1'
+    first_name: Derek
+    last_name: Novak
+    phone_number: '2543718698'
+    email: derek.novak1@gmail.com
+John Doe:
+    member_number: '2'
+    first_name: John
+    last_name: Doe
+    phone_number: '1234567890'
+    email: john.doe@gmail.com
