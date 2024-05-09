@@ -9,25 +9,32 @@ configure do
 end
 
 before do
-  session[:customers] ||= []
+  @customers = load_all_customer_info
 end
 
-# def load_customer_info
-#   credentials_path = if ENV["RACK_ENV"] == "test"
-#     File.expand_path("../test/users.yml", __FILE__)
-#   else
-#     File.expand_path("../users.yml", __FILE__)
-#   end
+def load_all_customer_info
+  credentials_path = if ENV["RACK_ENV"] == "test"
+    File.expand_path("../test/users.yml", __FILE__)
+  else
+    File.expand_path("../users.yml", __FILE__)
+  end
 
-#   YAML.load_file(credentials_path)
-# end
+  YAML.load_file(credentials_path)
+end
 
-def find_customer(first_name, last_name, phone_number, email)
-  customer = session[:customers].find do |_, info|
-    first_name.capitalize == info['first_name'] ||
-      last_name.capitalize == info['last_name'] ||
-      phone_number == info['phone_number'] ||
-      email == info['email']
+def load_customer_info(member_number)
+  @customers.select do |_, info|
+    member_number == info['member_number']
+  end
+end
+
+def find_customer(params)
+  @customers.select do |_, info|
+    params[:member_number] == info['member_number'] ||
+      params[:first_name].capitalize == info['first_name'] ||
+      params[:last_name].capitalize == info['last_name'] ||
+      params[:phone_number] == info['phone_number'] ||
+      params[:email].downcase == info['email']
   end
 end
 
@@ -44,10 +51,11 @@ get '/customers/lookup' do
 end
 
 post '/customers/lookup' do
-  customers = load_customer_info
+  customers = load_all_customer_info
 
-  customer = find_customer(params[:first_name], params[:last_name],
-                           params[:phone_number], params[:email])
+  customer = find_customer(params)
+
+  # "#{customer}"
 
   name = customer.keys.first
   redirect "/customers/#{customer[name]['member_number']}"
@@ -62,8 +70,6 @@ get '/pricing' do
 end
 
 get '/customers/:member_number' do
-  find_customer(
+  customer = load_customer_info(params[:member_number])
+  "#{customer}"
 end
-
-# Move YAML over to sessions for now. In the future
-# I will most likely be using MySQL
