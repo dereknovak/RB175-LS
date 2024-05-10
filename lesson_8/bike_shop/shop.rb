@@ -52,13 +52,15 @@ end
 
 post '/customers/lookup' do
   customers = load_all_customer_info
-
   customer = find_customer(params)
-
-  # "#{customer}"
-
-  name = customer.keys.first
-  redirect "/customers/#{customer[name]['member_number']}"
+  if customer.empty?
+    session[:message] = "Customer could not be found."
+    status 422
+    erb :lookup
+  else
+    name = customer.keys.first
+    redirect "/customers/#{customer[name]['member_number']}"
+  end
 end
 
 get '/schedule' do
@@ -70,6 +72,29 @@ get '/pricing' do
 end
 
 get '/customers/:member_number' do
-  customer = load_customer_info(params[:member_number])
-  "#{customer}"
+  customer_full = load_customer_info(params[:member_number])
+  name = customer_full.keys.first
+  @customer = customer_full[name]
+
+  erb :customer
 end
+
+get '/workorders/:wo_number' do
+  @bicycle = params[:bicycle].split('%20').join(' ')
+  erb :workorder
+end
+
+=begin
+
+Tasks:
+- Create a session for keeping track of work orders
+  - Should be tied to customer
+  - Session should use a helper method to increment WO nums
+
+- Need to generate a new WO when clicking 'new maintenance'
+  - Must carry both the customer and bike information
+
+- On WO, need to add parts/labor and update WO as each gets added
+  - Similar to Todo list, adding todos. Use as reference.
+
+=end

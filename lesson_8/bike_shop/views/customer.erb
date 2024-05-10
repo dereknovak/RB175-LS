@@ -1,1 +1,16 @@
-<h2><%= 
+<h2><%= "#{@customer['first_name']} #{@customer['last_name']}" %></h2>
+<ul>
+  <li>Member Number: <%= @customer['member_number'] %></li>
+  <li>Phone Number: <%= @customer['phone_number'] %></li>
+  <li>Email Number: <%= @customer['email'] %></li>
+</ul>
+
+<h3>Equipment</h3>
+<ul>
+  <% @customer['bicycles'].each do |bicycle| %>
+    <li>
+      <%= bicycle %>
+      <a href='/workorders/'>New Maintenance</a>
+    </li>
+  <% end %>
+</ul>

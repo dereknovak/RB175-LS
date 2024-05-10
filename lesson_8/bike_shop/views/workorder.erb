@@ -1,0 +1,32 @@
+<h2>New Work Order for the <%= @bicycle %></h2>
+
+<h3>Services</h3>
+<ul>
+</ul>
+
+<form action='/<%= @bicycle %>/workorder/add' method='post'>
+  <fieldset>
+    <label for='labor'>Labor</label>
+    <select name='labor' id='labor'>
+      <option disabled selected>Select one</option>
+      <option value='flat'>Flat Fix</option>
+      <option value='tune'>Bicycle Tune</option>
+      <option value='adjust_derailleur'>Adjust Derailleur</option>
+      <option value='adjust_brake'>Adjust Brake</option>
+      <option value='bike_clean'>Frame & Wheel Clean</option>
+      <option value='install_chain'>Install Chain</option>
+      <option value='install_cassette'>Install Cassette/Freewheel</option>
+      <option value='true_wheel'>True Wheel (lateral)</option>
+    </select>
+
+    <dl>
+      <dt><label for='part_name'>Part</label></dt>
+      <dd><input type='text' name='part_name' id='part_name'></dd>
+
+      <dt><label for='part_price'>Price</label></dt>
+      <dd><input type='text' name='part_price' id='part_price'></dd>
+    </dl>
+
+    <button type='submit'>Add</button>
+  </fieldset>
+</form>

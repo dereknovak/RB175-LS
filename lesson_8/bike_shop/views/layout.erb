@@ -2,10 +2,23 @@
 <html lang='en-US'>
   <head>
     <title><%= @tab %></title>
-    <link rel='stylesheet' href='/stylesheets/shop.css'>
+    <link rel='stylesheet' type='text/css' href='/stylesheets/shop.css'>
   </head>
 
   <body>
+    <header>
+      <ul>
+        <li><a href='/home'>Home</a></li>
+        <li><a href='/customers/lookup'>Customers</a></li>
+        <li><a href='/schedule'>Schedule</a></li>
+        <li><a href='/pricing'>Pricing</a></li>
+      </ul>
+
+      <% if session[:message] %>
+        <p><%= session.delete(:message) %></p>
+      <% end %>
+    </header>
+
     <main>
       <%= yield %>
     </main>

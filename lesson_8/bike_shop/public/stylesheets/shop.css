@@ -1,11 +1,15 @@
 * {
-  margin: 0;
-  padding: 0;
+  /* margin: 0;
+  padding: 0; */
   box-sizing: border-box;
 }
 
 body {
   margin: 10px;
+}
+
+header li {
+  display: inline-block;
 }
 
 label {
