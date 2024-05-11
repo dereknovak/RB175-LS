@@ -1,10 +1,29 @@
 <h2>New Work Order for the <%= @bicycle %></h2>
 
 <h3>Services</h3>
-<ul>
-</ul>
+<h4>Labor</h4>
+<% if @customer['bicycles'][@bicycle][:labor] %>
+  <ul>
+    <% @customer['bicycles'][@bicycle][:labor].each do |labor| %>
+      <li><%= labor %></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No labor yet</p>
+<% end %>
 
-<form action='/<%= @bicycle %>/workorder/add' method='post'>
+<h4>Parts</h4>
+<% if @customer['bicycles'][@bicycle][:parts] %>
+  <ul>
+    <% @customer['bicycles'][@bicycle][:parts].each do |part| %>
+      <li><%= part %></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No parts yet</p>
+<% end %>
+
+<form action='/workorders/<%= params[:workorder_number] %>/add' method='post'>
   <fieldset>
     <label for='labor'>Labor</label>
     <select name='labor' id='labor'>

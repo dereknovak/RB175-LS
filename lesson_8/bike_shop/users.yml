@@ -5,8 +5,8 @@ Derek Novak:
     phone_number: '2543718698'
     email: derek.novak1@gmail.com
     bicycles:
-        - Cannondale Synapse
-        - Trek Marlin
+        Cannondale Synapse: {}
+        Trek Marlin: {}
 John Doe:
     member_number: '2'
     first_name: John
@@ -14,5 +14,5 @@ John Doe:
     phone_number: '1234567890'
     email: john.doe@gmail.com
     bicycles:
-        - Specialized Roubaix
-        - Salsa Rangefinder
+        Specialized Roubaix: {}
+        Salsa Rangefinder: {}

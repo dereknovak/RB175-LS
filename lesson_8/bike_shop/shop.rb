@@ -38,6 +38,10 @@ def find_customer(params)
   end
 end
 
+def increment_workorders
+  session[:workorders].nil? ? 1 :(session[:workorders].keys.max + 1)
+end
+
 get '/' do
   redirect '/home'
 end
@@ -79,22 +83,53 @@ get '/customers/:member_number' do
   erb :customer
 end
 
-get '/workorders/:wo_number' do
-  @bicycle = params[:bicycle].split('%20').join(' ')
+post '/workorders/:member_number/:bicycle/new' do
+  @customer = load_customer_info(params[:member_number])
+  @bicycle = params[:bicycle]
+  @workorder_number = increment_workorders
+
+  session[:workorders] = { @workorder_number => { customer: @customer, bicycle: @bicycle }}
+
+  @customer['workorders'] = @workorder_number
+  redirect "/workorders/#{@workorder_number}"
+end
+
+get '/workorders/:workorder_number' do
+  @customer = session[:workorders][params[:workorder_number].to_i][:customer].values.first
+  @bicycle = session[:workorders][params[:workorder_number].to_i][:bicycle]
+
   erb :workorder
+end
+
+post '/workorders/:workorder_number/add' do
+  @customer = session[:workorders][params[:workorder_number].to_i][:customer].values.first
+  @bicycle = session[:workorders][params[:workorder_number].to_i][:bicycle]
+
+  if params[:labor]
+    if @customer['bicycles'][@bicycle][:labor]
+      @customer['bicycles'][@bicycle][:labor] << params[:labor]
+    else
+      @customer['bicycles'][@bicycle][:labor] = [params[:labor]]
+    end
+  elsif params[:part_name]
+    if @customer['bicycles'][@bicycle][:parts]
+      @customer['bicycles'][@bicycle][:parts] << params[:part_name]
+    else
+      @customer['bicycles'][@bicycle][:parts] = [params[:part_name]]
+    end
+  end
+  
+  # "#{@customer['bicycles'][@bicycle][:labor]}"
+  redirect "/workorders/#{params[:workorder_number]}"
 end
 
 =begin
 
 Tasks:
-- Create a session for keeping track of work orders
-  - Should be tied to customer
-  - Session should use a helper method to increment WO nums
+- USE TODO LIST AS EXAMPLE
 
-- Need to generate a new WO when clicking 'new maintenance'
-  - Must carry both the customer and bike information
-
-- On WO, need to add parts/labor and update WO as each gets added
-  - Similar to Todo list, adding todos. Use as reference.
+- New WOs are overwriting old ones. Fix.
+- Display All WOs on a customer's profile
+- Create a new tab for all existing WOs
 
 =end

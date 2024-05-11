@@ -9,8 +9,10 @@
 <ul>
   <% @customer['bicycles'].each do |bicycle| %>
     <li>
-      <%= bicycle %>
-      <a href='/workorders/'>New Maintenance</a>
+      <%= bicycle.first %>
+      <form action='/workorders/<%= "#{@customer['member_number']}/#{bicycle.first}" %>/new' method='post'>
+        <button type='submit'>New Maintenance</button>
+      </form>
     </li>
   <% end %>
 </ul>
