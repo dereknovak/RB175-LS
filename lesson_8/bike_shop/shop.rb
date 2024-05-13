@@ -80,6 +80,7 @@ get '/customers/:member_number' do
   name = customer_full.keys.first
   @customer = customer_full[name]
 
+  # "#{@customer}"
   erb :customer
 end
 
@@ -88,9 +89,18 @@ post '/workorders/:member_number/:bicycle/new' do
   @bicycle = params[:bicycle]
   @workorder_number = increment_workorders
 
-  session[:workorders] = { @workorder_number => { customer: @customer, bicycle: @bicycle }}
+  if session[:workorders]
+    session[:workorders][@workorder_number] = { customer: @customer, bicycle: @bicycle }
+  else
+    session[:workorders] = { @workorder_number => { customer: @customer, bicycle: @bicycle }}
+  end
 
-  @customer['workorders'] = @workorder_number
+  if @customer['workorders']
+    @customer['workorders'] << @workorder_number
+  else
+    @customer['workorders'] = [@workorder_number]
+  end
+
   redirect "/workorders/#{@workorder_number}"
 end
 
@@ -127,8 +137,7 @@ end
 
 Tasks:
 - USE TODO LIST AS EXAMPLE
-
-- New WOs are overwriting old ones. Fix.
+- YAML file is preventing new wos to be added. May need to remove and switch soly to session
 - Display All WOs on a customer's profile
 - Create a new tab for all existing WOs
 

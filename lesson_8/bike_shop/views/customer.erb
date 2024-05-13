@@ -16,3 +16,17 @@
     </li>
   <% end %>
 </ul>
+
+<h3>Work Orders</h3>
+<% if @customer['workorders'] %>
+  <ul>
+    <% @customer['workorders'].each do |workorder_number| %>
+      <li>
+        <%= workorder_number %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No existing workorders.</p>
+<% end %>
+
