@@ -15,3 +15,8 @@ header li {
 label {
   display: block;
 }
+
+dl#bicycle_info dt,
+dl#bicycle_info dd {
+  display: inline;
+}

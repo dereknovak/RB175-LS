@@ -57,8 +57,8 @@ post '/customers/lookup' do
     status 422
     erb :lookup
   else
-    name = customer.keys.first
-    redirect "/customers/#{customer[name]['member_number']}"
+    member_number = customer.keys.first
+    redirect "/customers/#{member_number}"
   end
 end
 
@@ -141,9 +141,17 @@ post '/workorders/:member_number/:bicycle_number/new' do
   @workorder_number = increment_workorders
 
   if session[:workorders]
-    session[:workorders][@workorder_number] = { customer: @customer, bicycle: @bicycle_number }
+    session[:workorders][@workorder_number] = {
+      customer: @customer,
+      bicycle: @bicycle_number
+    }
   else
-    session[:workorders] = { @workorder_number => { customer: @customer, bicycle: @bicycle_number }}
+    session[:workorders] = {
+      @workorder_number => {
+        customer: @customer,
+        bicycle: @bicycle_number
+        }
+      }
   end
 
   if @customer[:workorders]
@@ -156,31 +164,34 @@ post '/workorders/:member_number/:bicycle_number/new' do
 end
 
 get '/workorders/:workorder_number' do
-  @customer = session[:workorders][params[:workorder_number].to_i][:customer].values.first
-  @bicycle = session[:workorders][params[:workorder_number].to_i][:bicycle]
+  @customer = session[:workorders][params[:workorder_number].to_i][:customer]
+  bicycle_number = session[:workorders][params[:workorder_number].to_i][:bicycle]
+  @bicycle = @customer[:bicycles][bicycle_number]
 
+  # "#{@bicycle}"
   erb :workorder
 end
 
 post '/workorders/:workorder_number/add' do
-  @customer = session[:workorders][params[:workorder_number].to_i][:customer].values.first
-  @bicycle = session[:workorders][params[:workorder_number].to_i][:bicycle]
+  @customer = session[:workorders][params[:workorder_number].to_i][:customer]
+  bicycle_number = session[:workorders][params[:workorder_number].to_i][:bicycle]
+  @bicycle = @customer[:bicycles][bicycle_number]
 
   if params[:labor]
-    if @customer['bicycles'][@bicycle][:labor]
-      @customer['bicycles'][@bicycle][:labor] << params[:labor]
+    if @bicycle[:labor]
+      @bicycle[:labor] << params[:labor]
     else
-      @customer['bicycles'][@bicycle][:labor] = [params[:labor]]
+      @bicycle[:labor] = [params[:labor]]
     end
   elsif params[:part_name]
-    if @customer['bicycles'][@bicycle][:parts]
-      @customer['bicycles'][@bicycle][:parts] << params[:part_name]
+    if @bicycle[:parts]
+      @bicycle[:parts] << params[:part_name]
     else
-      @customer['bicycles'][@bicycle][:parts] = [params[:part_name]]
+      @bicycle[:parts] = [params[:part_name]]
     end
   end
   
-  # "#{@customer['bicycles'][@bicycle][:labor]}"
+  # "#{@customer}"
   redirect "/workorders/#{params[:workorder_number]}"
 end
 
@@ -188,10 +199,7 @@ end
 
 Tasks:
 - USE TODO LIST AS EXAMPLE
-- Got most of session transition done. Still need some cleanup
-    - WO.erb
-    - Customer lookup form not working
-        - 'find_customer' method?
+- New WO is getting created, but it's keeping the same labor/parts
 - Display All WOs on a customer's profile
 - Create a new tab for all existing WOs
 

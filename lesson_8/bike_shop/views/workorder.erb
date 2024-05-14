@@ -1,10 +1,25 @@
-<h2>New Work Order for the <%= @bicycle %></h2>
+<h2>Work Order No. <%= params[:workorder_number] %></h2>
+
+<h3>Bicycle Info</h3>
+<dl id='bicycle_info'>
+  <dt>Serial:<dt>
+  <dd><%= @bicycle[:serial] %></dd>
+
+  <dt>Make:<dt>
+  <dd><%= @bicycle[:make] %></dd>
+
+  <dt>Model:<dt>
+  <dd><%= @bicycle[:model] %></dd>
+
+  <dt>Color:<dt>
+  <dd><%= @bicycle[:color] %></dd>
+</dl>
 
 <h3>Services</h3>
 <h4>Labor</h4>
-<% if @customer[:bicycles][@bicycle_number][:labor] %>
+<% if @bicycle[:labor] %>
   <ul>
-    <% @customer['bicycles'][@bicycle][:labor].each do |labor| %>
+    <% @bicycle[:labor].each do |labor| %>
       <li><%= labor %></li>
     <% end %>
   </ul>
@@ -13,9 +28,9 @@
 <% end %>
 
 <h4>Parts</h4>
-<% if @customer['bicycles'][@bicycle][:parts] %>
+<% if @bicycle[:parts] %>
   <ul>
-    <% @customer['bicycles'][@bicycle][:parts].each do |part| %>
+    <% @bicycle[:parts].each do |part| %>
       <li><%= part %></li>
     <% end %>
   </ul>
@@ -28,14 +43,14 @@
     <label for='labor'>Labor</label>
     <select name='labor' id='labor'>
       <option disabled selected>Select one</option>
-      <option value='flat'>Flat Fix</option>
-      <option value='tune'>Bicycle Tune</option>
-      <option value='adjust_derailleur'>Adjust Derailleur</option>
-      <option value='adjust_brake'>Adjust Brake</option>
-      <option value='bike_clean'>Frame & Wheel Clean</option>
-      <option value='install_chain'>Install Chain</option>
-      <option value='install_cassette'>Install Cassette/Freewheel</option>
-      <option value='true_wheel'>True Wheel (lateral)</option>
+      <option value='Fix Flat'>Fix Flat</option>
+      <option value='Tune'>Bicycle Tune</option>
+      <option value='Adjust Derailleur'>Adjust Derailleur</option>
+      <option value='Adjust Brake'>Adjust Brake</option>
+      <option value='Frame & Wheel Clean'>Frame & Wheel Clean</option>
+      <option value='Install Chain'>Install Chain</option>
+      <option value='Install Cassette/Freewheel'>Install Cassette/Freewheel</option>
+      <option value='True Wheel (lateral)'>True Wheel (lateral)</option>
     </select>
 
     <dl>
