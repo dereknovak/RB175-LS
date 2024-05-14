@@ -12,34 +12,29 @@ before do
   @customers = load_all_customer_info
 end
 
-def load_all_customer_info
-  credentials_path = if ENV["RACK_ENV"] == "test"
-    File.expand_path("../test/users.yml", __FILE__)
-  else
-    File.expand_path("../users.yml", __FILE__)
-  end
-
-  YAML.load_file(credentials_path)
-end
-
-def load_customer_info(member_number)
-  @customers.select do |_, info|
-    member_number == info['member_number']
-  end
-end
-
 def find_customer(params)
-  @customers.select do |_, info|
-    params[:member_number] == info['member_number'] ||
-      params[:first_name].capitalize == info['first_name'] ||
-      params[:last_name].capitalize == info['last_name'] ||
-      params[:phone_number] == info['phone_number'] ||
-      params[:email].downcase == info['email']
+  session[:customers].select do |member_number, info|
+    params[:member_number] == member_number.to_s
+      params[:first_name].capitalize == info[:first_name] ||
+      params[:last_name].capitalize == info[:last_name] ||
+      params[:phone_number] == info[:phone_number] ||
+      params[:email].downcase == info[:email]
   end
 end
 
 def increment_workorders
   session[:workorders].nil? ? 1 :(session[:workorders].keys.max + 1)
+end
+
+def increment_member_number
+  return 1 unless session[:customers]
+  session[:customers].keys.max + 1
+end
+
+def increment_bicycle_number(member_number)
+  customer = session[:customers][member_number]
+  return 1 unless customer[:bicycles]
+  customer[:bicycles].keys.max + 1
 end
 
 get '/' do
@@ -67,6 +62,34 @@ post '/customers/lookup' do
   end
 end
 
+get '/customers/new' do
+  erb :new_customer
+end
+
+post '/customers/new/add' do
+  customer_name = "#{params[:first_name].capitalize} #{params[:last_name].capitalize}"
+  member_number = increment_member_number
+  if session[:customers]
+    session[:customers][member_number] = {
+      first_name: customer_name.split.first,
+      last_name: customer_name.split.last,
+      phone_number: params[:phone_number],
+      email: params[:email]
+    }
+  else
+    session[:customers] = { 
+      member_number => {
+        first_name: customer_name.split.first,
+        last_name: customer_name.split.last,
+        phone_number: params[:phone_number],
+        email: params[:email]
+      }
+    }
+  end
+
+  redirect "/customers/#{member_number}"
+end
+
 get '/schedule' do
   erb :schedule
 end
@@ -76,29 +99,57 @@ get '/pricing' do
 end
 
 get '/customers/:member_number' do
-  customer_full = load_customer_info(params[:member_number])
-  name = customer_full.keys.first
-  @customer = customer_full[name]
+  @customer = session[:customers][params[:member_number].to_i]
+  @name = "#{@customer[:first_name]} #{@customer[:last_name]}"
 
-  # "#{@customer}"
+  # "#{session[:customers][params[:member_number].to_i]}"
   erb :customer
 end
 
-post '/workorders/:member_number/:bicycle/new' do
-  @customer = load_customer_info(params[:member_number])
-  @bicycle = params[:bicycle]
+get '/customers/:member_number/bicycles/new' do
+  erb :new_bicycle
+end
+
+post '/customers/:member_number/new/add' do
+  @customer = session[:customers][params[:member_number].to_i]
+  bicycle_number = increment_bicycle_number(params[:member_number].to_i)
+
+  if @customer[:bicycles]
+    @customer[:bicycles][bicycle_number] = {
+      serial: params[:serial],
+      make: params[:make],
+      model: params[:model],
+      color: params[:color]
+    }
+  else
+    @customer[:bicycles] = {
+      bicycle_number => {
+        serial: params[:serial],
+        make: params[:make],
+        model: params[:model],
+        color: params[:color]
+      }
+    }
+  end
+
+  redirect "/customers/#{params[:member_number]}"
+end
+
+post '/workorders/:member_number/:bicycle_number/new' do
+  @customer = session[:customers][params[:member_number].to_i]
+  @bicycle_number = params[:bicycle_number].to_i
   @workorder_number = increment_workorders
 
   if session[:workorders]
-    session[:workorders][@workorder_number] = { customer: @customer, bicycle: @bicycle }
+    session[:workorders][@workorder_number] = { customer: @customer, bicycle: @bicycle_number }
   else
-    session[:workorders] = { @workorder_number => { customer: @customer, bicycle: @bicycle }}
+    session[:workorders] = { @workorder_number => { customer: @customer, bicycle: @bicycle_number }}
   end
 
-  if @customer['workorders']
-    @customer['workorders'] << @workorder_number
+  if @customer[:workorders]
+    @customer[:workorders] << @workorder_number
   else
-    @customer['workorders'] = [@workorder_number]
+    @customer[:workorders] = [@workorder_number]
   end
 
   redirect "/workorders/#{@workorder_number}"
@@ -137,7 +188,10 @@ end
 
 Tasks:
 - USE TODO LIST AS EXAMPLE
-- YAML file is preventing new wos to be added. May need to remove and switch soly to session
+- Got most of session transition done. Still need some cleanup
+    - WO.erb
+    - Customer lookup form not working
+        - 'find_customer' method?
 - Display All WOs on a customer's profile
 - Create a new tab for all existing WOs
 

@@ -1,0 +1,26 @@
+<h2>Add a New Bicycle</h2>
+
+<form action='/customers/<%= params[:member_number] %>/new/add' method='post'>
+    <label for='serial'>
+      Serial Number
+      <input type=email' name='serial' id='serial' required>
+    </label>
+
+    <label for='make'>
+      Make
+      <input type='text' name='make' id='make' required>
+    </label>
+
+    <label for='model'>
+      Model
+      <input type='text' name='model' id='model' required>
+    </label>
+
+    <label for='color'>
+      Color
+      <input type='text' name='color' id='color' required>
+    </label>
+
+    <button type='submit'>Add</button>
+    <button type='reset'>Reset</button>
+</form>

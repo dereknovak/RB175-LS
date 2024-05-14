@@ -1,21 +1,30 @@
-<h2><%= "#{@customer['first_name']} #{@customer['last_name']}" %></h2>
+<h2><%= "#{@name}" %></h2>
 <ul>
-  <li>Member Number: <%= @customer['member_number'] %></li>
-  <li>Phone Number: <%= @customer['phone_number'] %></li>
-  <li>Email Number: <%= @customer['email'] %></li>
+  <li>Member Number: <%= params[:member_number] %></li>
+  <li>Phone Number: <%= @customer[:phone_number] %></li>
+  <li>Email Number: <%= @customer[:email] %></li>
 </ul>
 
 <h3>Equipment</h3>
-<ul>
-  <% @customer['bicycles'].each do |bicycle| %>
-    <li>
-      <%= bicycle.first %>
-      <form action='/workorders/<%= "#{@customer['member_number']}/#{bicycle.first}" %>/new' method='post'>
-        <button type='submit'>New Maintenance</button>
-      </form>
-    </li>
-  <% end %>
-</ul>
+
+<form action='/customers/<%= params[:member_number] %>/bicycles/new' method='get'>
+  <button type='submit'>Add New Bike</button>
+</form>
+
+<% if @customer[:bicycles] %>
+  <ul>
+    <% @customer[:bicycles].each do |bicycle_number, bicycle| %>
+      <li>
+        <%= "#{bicycle[:make]} #{bicycle[:model]}" %>
+        <form action='/workorders/<%= "#{params[:member_number]}/#{bicycle_number}" %>/new' method='post'>
+          <button type='submit'>New Maintenance</button>
+        </form>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No equipment has been added.</p>
+<% end %>
 
 <h3>Work Orders</h3>
 <% if @customer['workorders'] %>

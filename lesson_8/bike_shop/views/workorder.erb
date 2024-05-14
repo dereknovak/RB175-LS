@@ -2,7 +2,7 @@
 
 <h3>Services</h3>
 <h4>Labor</h4>
-<% if @customer['bicycles'][@bicycle][:labor] %>
+<% if @customer[:bicycles][@bicycle_number][:labor] %>
   <ul>
     <% @customer['bicycles'][@bicycle][:labor].each do |labor| %>
       <li><%= labor %></li>
