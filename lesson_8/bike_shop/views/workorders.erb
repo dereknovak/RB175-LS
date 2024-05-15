@@ -1,0 +1,15 @@
+<h2>Workorders</h2>
+
+<% if session[:workorders] %>
+  <ul>
+    <% session[:workorders].each do |workorder_number, info| %>
+      <li>
+        <a href='/workorders/<%= workorder_number %>'>
+          <%= "WO ##{workorder_number} - #{info[:customer][:first_name]} #{info[:customer][:last_name]}" %>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No existing workorders</p>
+<% end %>

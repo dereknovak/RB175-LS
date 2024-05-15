@@ -1,7 +1,24 @@
-<h2>Work Order No. <%= params[:workorder_number] %></h2>
+<h2>Work Order #<%= params[:workorder_number] %></h2>
+
+<h3>Customer Info</h3>
+<dl id='workorder_info'>
+  <dt>First Name:<dt>
+  <dd><%= @customer[:first_name] %></dd>
+
+  <dt>Last Name:<dt>
+  <dd><%= @customer[:last_name] %></dd>
+
+  <dt>Phone Number:<dt>
+  <dd><%= @customer[:phone_number] %></dd>
+
+  <dt>Email Address:<dt>
+  <dd><%= @customer[:email] %></dd>
+</dl>
+
+<button><a href='/customers/<%= @customer[:member_number] %>'>Customer Profile</a></button>
 
 <h3>Bicycle Info</h3>
-<dl id='bicycle_info'>
+<dl id='workorder_info'>
   <dt>Serial:<dt>
   <dd><%= @bicycle[:serial] %></dd>
 
@@ -17,9 +34,9 @@
 
 <h3>Services</h3>
 <h4>Labor</h4>
-<% if @bicycle[:labor] %>
+<% if @workorder[:labor] %>
   <ul>
-    <% @bicycle[:labor].each do |labor| %>
+    <% @workorder[:labor].each do |labor| %>
       <li><%= labor %></li>
     <% end %>
   </ul>
@@ -28,10 +45,10 @@
 <% end %>
 
 <h4>Parts</h4>
-<% if @bicycle[:parts] %>
+<% if @workorder[:parts] %>
   <ul>
-    <% @bicycle[:parts].each do |part| %>
-      <li><%= part %></li>
+    <% @workorder[:parts].each do |part, price| %>
+      <li><%= "#{part} - $#{price}" %></li>
     <% end %>
   </ul>
 <% else %>

@@ -71,6 +71,7 @@ post '/customers/new/add' do
   member_number = increment_member_number
   if session[:customers]
     session[:customers][member_number] = {
+      member_number: member_number,
       first_name: customer_name.split.first,
       last_name: customer_name.split.last,
       phone_number: params[:phone_number],
@@ -79,6 +80,7 @@ post '/customers/new/add' do
   else
     session[:customers] = { 
       member_number => {
+        member_number: member_number,
         first_name: customer_name.split.first,
         last_name: customer_name.split.last,
         phone_number: params[:phone_number],
@@ -90,8 +92,8 @@ post '/customers/new/add' do
   redirect "/customers/#{member_number}"
 end
 
-get '/schedule' do
-  erb :schedule
+get '/workorders' do
+  erb :workorders
 end
 
 get '/pricing' do
@@ -167,6 +169,7 @@ get '/workorders/:workorder_number' do
   @customer = session[:workorders][params[:workorder_number].to_i][:customer]
   bicycle_number = session[:workorders][params[:workorder_number].to_i][:bicycle]
   @bicycle = @customer[:bicycles][bicycle_number]
+  @workorder = session[:workorders][params[:workorder_number].to_i]
 
   # "#{@bicycle}"
   erb :workorder
@@ -177,21 +180,23 @@ post '/workorders/:workorder_number/add' do
   bicycle_number = session[:workorders][params[:workorder_number].to_i][:bicycle]
   @bicycle = @customer[:bicycles][bicycle_number]
 
+  @workorder = session[:workorders][params[:workorder_number].to_i]
+
   if params[:labor]
-    if @bicycle[:labor]
-      @bicycle[:labor] << params[:labor]
+    if @workorder[:labor]
+      @workorder[:labor] << params[:labor]
     else
-      @bicycle[:labor] = [params[:labor]]
+      @workorder[:labor] = [params[:labor]]
     end
   elsif params[:part_name]
-    if @bicycle[:parts]
-      @bicycle[:parts] << params[:part_name]
+    if @workorder[:parts]
+      @workorder[:parts][params[:part_name]] = params[:part_price]
     else
-      @bicycle[:parts] = [params[:part_name]]
+      @workorder[:parts] = { params[:part_name] => params[:part_price].to_i }
     end
   end
   
-  # "#{@customer}"
+  # "#{@workorder}"
   redirect "/workorders/#{params[:workorder_number]}"
 end
 
@@ -199,7 +204,6 @@ end
 
 Tasks:
 - USE TODO LIST AS EXAMPLE
-- New WO is getting created, but it's keeping the same labor/parts
 - Display All WOs on a customer's profile
 - Create a new tab for all existing WOs
 

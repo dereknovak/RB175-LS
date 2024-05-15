@@ -16,7 +16,7 @@ label {
   display: block;
 }
 
-dl#bicycle_info dt,
-dl#bicycle_info dd {
+dl#workorder_info dt,
+dl#workorder_info dd {
   display: inline;
 }
