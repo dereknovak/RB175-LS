@@ -9,7 +9,7 @@ configure do
 end
 
 before do
-  @customers = load_all_customer_info
+  # @customers = load_all_customer_info
 end
 
 def find_customer(params)
